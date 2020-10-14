@@ -6,12 +6,13 @@ const Constraint = Matter.Constraint;
 var engine, world;
 var box1, pig1,pig3;
 var backgroundImg,platform;
-var bird, slingshot;
+var bird, slingshot,bg;
+var score;
 
 var gameState = "onSling";
 
 function preload() {
-    backgroundImg = loadImage("sprites/bg.png");
+    back();
 }
 
 function setup(){
@@ -40,23 +41,39 @@ function setup(){
 
     bird = new Bird(200,50);
 
+    score = 0;
+
     //log6 = new Log(230,180,80, PI/2);
     slingshot = new SlingShot(bird.body,{x:200, y:50});
+
+
 }
 
 function draw(){
-    background(backgroundImg);
+    
+    if(backgroundImg){
+        background(backgroundImg);
+    }
+    fill("white");
+    textSize(35);
+    noStroke();
+    textFont("CONSOLAS");
+    text("SCORE:"+score,width-300,50);
+    
+    
     Engine.update(engine);
     //strokeWeight(4);
     box1.display();
     box2.display();
     ground.display();
     pig1.display();
+    pig1.score();
     log1.display();
 
     box3.display();
     box4.display();
     pig3.display();
+    pig3.score();
     log3.display();
 
     box5.display();
@@ -66,7 +83,9 @@ function draw(){
     bird.display();
     platform.display();
     //log6.display();
-    slingshot.display();    
+    slingshot.display(); 
+      
+   
 }
 
 function mouseDragged(){
@@ -85,4 +104,16 @@ function keyPressed(){
     if(keyCode === 32){
        // slingshot.attach(bird.body);
     }
+}
+
+async function back(){
+    var response = await fetch("http://worldtimeapi.org/api/timezone/Asia/Singapore");
+    var responseJson = await response.json();
+   var time = (responseJson.datetime.slice(11,13))
+    if(time>6 && time<12){
+      bg = "sprites/bg.png";
+    }else{
+        bg = "sprites/bg2.jpg"
+    }
+    backgroundImg = loadImage(bg);
 }
